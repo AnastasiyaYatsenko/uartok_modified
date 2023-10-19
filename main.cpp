@@ -101,92 +101,6 @@ void printSettingsAndStatus(TMC2209 *tmcd){
 	}
 	HAL_UART_Transmit(&huart2, (uint8_t*)str, strlen(str), 30);
 
-	/*Serial.print("settings.irun_percent = ");
-	Serial.println(settings.irun_percent);
-
-	Serial.print("settings.irun_register_value = ");
-	Serial.println(settings.irun_register_value);
-
-	Serial.print("settings.ihold_percent = ");
-	Serial.println(settings.ihold_percent);
-
-	Serial.print("settings.ihold_register_value = ");
-	Serial.println(settings.ihold_register_value);
-
-	Serial.print("settings.iholddelay_percent = ");
-	Serial.println(settings.iholddelay_percent);
-
-	Serial.print("settings.iholddelay_register_value = ");
-	Serial.println(settings.iholddelay_register_value);
-
-	Serial.print("settings.automatic_current_scaling_enabled = ");
-	Serial.println(settings.automatic_current_scaling_enabled);
-
-	Serial.print("settings.automatic_gradient_adaptation_enabled = ");
-	Serial.println(settings.automatic_gradient_adaptation_enabled);
-
-	Serial.print("settings.pwm_offset = ");
-	Serial.println(settings.pwm_offset);
-
-	Serial.print("settings.pwm_gradient = ");
-	Serial.println(settings.pwm_gradient);
-
-	Serial.print("settings.cool_step_enabled = ");
-	Serial.println(settings.cool_step_enabled);
-
-	Serial.print("settings.analog_current_scaling_enabled = ");
-	Serial.println(settings.analog_current_scaling_enabled);
-
-	Serial.print("settings.internal_sense_resistors_enabled = ");
-	Serial.println(settings.internal_sense_resistors_enabled);
-
-	Serial.println("*************************");
-	Serial.println();*/
-/*
-	Serial.println("*************************");
-	Serial.println("hardwareDisabled()");
-	bool hardware_disabled = stepper_driver.hardwareDisabled();
-	Serial.print("hardware_disabled = ");
-	Serial.println(hardware_disabled);
-	Serial.println("*************************");
-	Serial.println();
-	Serial.println("*************************");
-	Serial.println("getStatus()");
-	TMC2209::Status status = stepper_driver.getStatus();
-	Serial.print("status.over_temperature_warning = ");
-	Serial.println(status.over_temperature_warning);
-	Serial.print("status.over_temperature_shutdown = ");
-	Serial.println(status.over_temperature_shutdown);
-	Serial.print("status.short_to_ground_a = ");
-	Serial.println(status.short_to_ground_a);
-	Serial.print("status.short_to_ground_b = ");
-	Serial.println(status.short_to_ground_b);
-	Serial.print("status.low_side_short_a = ");
-	Serial.println(status.low_side_short_a);
-	Serial.print("status.low_side_short_b = ");
-	Serial.println(status.low_side_short_b);
-	Serial.print("status.open_load_a = ");
-	Serial.println(status.open_load_a);
-	Serial.print("status.open_load_b = ");
-	Serial.println(status.open_load_b);
-	Serial.print("status.over_temperature_120c = ");
-	Serial.println(status.over_temperature_120c);
-	Serial.print("status.over_temperature_143c = ");
-	Serial.println(status.over_temperature_143c);
-	Serial.print("status.over_temperature_150c = ");
-	Serial.println(status.over_temperature_150c);
-	Serial.print("status.over_temperature_157c = ");
-	Serial.println(status.over_temperature_157c);
-	Serial.print("status.current_scaling = ");
-	Serial.println(status.current_scaling);
-	Serial.print("status.stealth_chop_mode = ");
-	Serial.println(status.stealth_chop_mode);
-	Serial.print("status.standstill = ");
-	Serial.println(status.standstill);
-	Serial.println("*************************");
-	Serial.println();
-
-	Serial.println();*/
 	sprintf(str, "\rGSTAT   = 0x%02x\r\n\0", global_status); HAL_UART_Transmit(&huart2, (uint8_t*)str, strlen(str), 30);
 	sprintf(str, "\rIOPins  = 0x%03x\r\n\0", iopins);		 HAL_UART_Transmit(&huart2, (uint8_t*)str, strlen(str), 30);
 	sprintf(str, "\rVersion = %d\r\n\0",   	 version);		 HAL_UART_Transmit(&huart2, (uint8_t*)str, strlen(str), 30);
@@ -241,58 +155,56 @@ int main(void)
 	tmcd.setup(&huart2, 115200, tmcd.SERIAL_ADDRESS_0);
 	printSettingsAndStatus(&tmcd);
 	HAL_Delay(1000);
-	tmcd.setRunCurrent(50);
+	tmcd.setRunCurrent(100);
 	tmcd.enable();
-	tmcd.moveAtVelocity(10000);
+	//tmcd.moveAtVelocity(10000);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	int counter=0;
+	/*int counter=0;
 	int dir = 0;
 	int X = 20;
-	int v=0,prev_v=0;
+	int v=0,prev_v=0;*/
+	bool flag = false;
+	tmcd.moveAtVelocity(400); //в районі +-430 його починає жужукать
 	while (1) {
-		int v=++counter;
+		//tmcd.moveAtVelocity(500);
+		/*int v=++counter;
 		if (counter>=X) v=2*X-counter;
 		if (counter>=3*X) v=counter-4*X;
 		if (counter>=4*X) counter=0;
 		if (v>=0 && prev_v<0) tmcd.enableInverseMotorDirection();
 		if (v<0 && prev_v>=0) tmcd.disableInverseMotorDirection();
-		tmcd.moveAtVelocity(v>0?v*1000:-v*1000);
+		tmcd.moveAtVelocity(v>0?v*1000:-v*1000);*/
+		tmcd.setMicrostepsPerStepPowerOfTwo(0);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(1);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(2);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(3);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(4);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(5);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(6);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(7);
+		HAL_Delay(2000);
+		tmcd.setMicrostepsPerStepPowerOfTwo(8);
+		HAL_Delay(1000);
+
+
+		//tmcd.setMicrostepsPerStepPowerOfTwo(8);
+		//flag = !flag;
+		//HAL_Delay(1000);
+
 		//printSettingsAndStatus(&tmcd);
-		HAL_Delay(100);
-		prev_v = v;
-/*		HAL_GPIO_WritePin(En_GPIO_Port, En_Pin, GPIO_PIN_RESET);
-		for(uint32_t i=0; i<=2000; i++) {
-
-			HAL_GPIO_WritePin(Step_GPIO_Port, Step_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_RESET);
-			HAL_Delay(1);
-
-			HAL_GPIO_WritePin(Step_GPIO_Port, Step_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_SET);
-			HAL_Delay(1);
-
-		}
-		HAL_GPIO_WritePin(En_GPIO_Port, En_Pin, GPIO_PIN_SET);*/
-
-		/*communication = tmcd.isCommunicating();
-		bool issetup=tmcd.isSetupAndCommunicating();
-		bool isnotsetup=tmcd.isCommunicatingButNotSetup();*/
-
-
-//		uint8_t version=tmcd.getVersion();
-		/*if (communication) {
-			for(int i=0; i<=20; i++){
-				HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
-				DWT_Delay_ms(500);
-			}
-		}
-		HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);*/
-		//DWT_Delay_ms(500);
-	//	HAL_Delay(1000);
+		//HAL_Delay(100);
+		//prev_v = v;
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
